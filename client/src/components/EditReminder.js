@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../store';
 
-export default function AddReminder() {
+export default function EditReminder() {
     let navigate = useNavigate();
     const { id } = useUserStore();
 
@@ -50,7 +50,7 @@ export default function AddReminder() {
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100">
             <form className="bg-white p-10 shadow-md rounded-md max-w-lg w-full" onSubmit={handleSubmit}>
-                <h2 className="text-center text-2xl font-bold mb-6">Set a New Reminder</h2>
+                <h2 className="text-center text-2xl font-bold mb-6">Edit Reminder</h2>
 
                 <div className="mb-4">
                     <label className="block text-gray-700">Select a Date:</label>

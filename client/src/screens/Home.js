@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Card from "../components/Card";
 import { useUserStore } from '../store';
@@ -6,8 +7,6 @@ import { useUserStore } from '../store';
 export default function Home() {
     const { id } = useUserStore();
     const [reminders, setReminders] = useState([]);
-
-    // setReminders((prevReminders) => [...prevReminders, ...j.data]);
 
     useEffect(() => {
         async function loadData() {
@@ -24,7 +23,7 @@ export default function Home() {
             const j = await response.json();
             if (j.success) {
                 setReminders(j.data.tasks);
-                console.log(reminders);
+                console.log("R",j.data.tasks);
             }
         }
         loadData();
@@ -36,7 +35,9 @@ export default function Home() {
             <div className={`flex flex-row flex-wrap py-6 justify-start items-start text-3xl text-gray-400 ${reminders.length ? "" : "bg-blue-50"}`}>
                 {reminders.length > 0 ? (
                     reminders.map((reminder) => (
-                        <Card reminder={reminder} />
+                        <Link key={reminder._id} to='/editreminder' className="basis-1/4 cursor-pointer">
+                            <Card reminder={reminder} />
+                        </Link>
                     ))
                 ) : (
                     <div className="w-full flex flex-col justify-start items-center py-[16%] text-center text-gray-500">

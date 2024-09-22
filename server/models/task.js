@@ -20,7 +20,7 @@ const TaskSchema = new Schema({
     },
     contactno: {
         type: Number,
-        required: true
+        // required: true
     },
     sms: {
         type: String,

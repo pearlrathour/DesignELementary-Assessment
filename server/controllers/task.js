@@ -2,14 +2,14 @@ const User = require("../models/user");
 const Task = require("../models/task");
 
 module.exports.add = async (req, res) => {
-    const { id, date, subject, description, email, contactno, sms, repeat} = req.body;
+    const { id, date, subject, description, email, contactno, sms, repeat } = req.body;
 
     try {
         const user = await User.findById(id);
         if (!user) {
             return res.status(404).json({ success: false, message: "User not found" });
         }
-        const task = new Task({ date, subject, description, email, contactno, sms, repeat, enable: true});
+        const task = new Task({ date, subject, description, email, contactno, sms, repeat, enable: true });
         user.tasks.push(task);
         await task.save();
         await user.save();
@@ -50,8 +50,28 @@ module.exports.enable = async (req, res) => {
     const { id, date, subject, description, email, contactno, sms, repeat, enable } = req.body;
 
     try {
-        await Task.findByIdAndUpdate({ _id: id }, { $set: { date: date, subject: subject, description: description, email: email, contactno: contactno, sms: sms, repeat: repeat, enable: enable}});
+        await Task.findByIdAndUpdate({ _id: id }, { $set: { date: date, subject: subject, description: description, email: email, contactno: contactno, sms: sms, repeat: repeat, enable: enable } });
         res.json({ success: true });
+    }
+    catch (error) {
+        res.json({ success: false });
+    }
+};
+
+module.exports.fetchreminders = async (req, res) => {
+    const { id } = req.body;
+
+    try {
+        const user = await User.findById(id).populate({
+            path: 'tasks',
+            model: 'Task',
+            select: '-_id -__v'
+        });
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+        res.json({success: true, data: user});
     }
     catch (error) {
         res.json({ success: false });

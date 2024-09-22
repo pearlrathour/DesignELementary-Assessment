@@ -15,4 +15,7 @@ router.route('/edit')
 router.route('/enable')
     .post(tasks.enable);
 
+router.route('/fetchreminders')
+    .post(tasks.fetchreminders);
+    
 module.exports = router;

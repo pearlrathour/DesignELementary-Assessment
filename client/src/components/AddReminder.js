@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useUserStore } from '../store';
 
 export default function ReminderForm() {
+    let navigate = useNavigate();
+    const { id } = useUserStore();
+
     const [reminder, setReminder] = useState({
         date: '',
         subject: '',
         description: '',
         email: '',
-        contact: '',
+        contactno: '',
         sms: '',
         recurrence: 'No Repeat',
         enable: true
@@ -14,15 +19,32 @@ export default function ReminderForm() {
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-        setReminder((prev) => ({
-            ...prev,
-            [name]: type === 'checkbox' ? checked : value
-        }));
-    };
+        if (name === 'enable') {
+          setReminder((prev) => ({ ...prev, enable: checked }));
+        } else {
+          setReminder((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+        }
+      };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Reminder Details:', reminder);
+        const reminderData = { ...reminder, id: id };
+
+        const response = await fetch('http://localhost:4000/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(reminderData)
+        });
+
+        const j = await response.json();
+        if (j.success) {
+            navigate("/home");
+        }
+        else {
+            alert(j.message);
+        }
     };
 
     return (
@@ -32,7 +54,7 @@ export default function ReminderForm() {
 
                 <div className="mb-4">
                     <label className="block text-gray-700">Select a Date:</label>
-                    <input type="date" name="date" value={reminder.date} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md" required/>
+                    <input type="date" name="date" value={reminder.date} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md" required />
                 </div>
 
                 <div className="mb-4">
@@ -49,7 +71,7 @@ export default function ReminderForm() {
 
                 <div className="mb-4">
                     <label className="block text-gray-700">Add Description:</label>
-                    <textarea name="description" value={reminder.description} onChange={handleChange} className="w-full px-3 py-1 border border-gray-300 rounded-md" rows="3"/>
+                    <textarea name="description" value={reminder.description} onChange={handleChange} className="w-full px-3 py-1 border border-gray-300 rounded-md" rows="3" />
                 </div>
 
                 <div className="mb-4">
@@ -59,7 +81,7 @@ export default function ReminderForm() {
 
                 <div className="mb-4">
                     <label className="block text-gray-700">Contact No.:</label>
-                    <input type="tel" name="contact" value={reminder.contact} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md" required/>
+                    <input type="tel" name="contact" value={reminder.contact} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md" required />
                 </div>
 
                 <div className="mb-4">
@@ -71,11 +93,11 @@ export default function ReminderForm() {
                     <label className="block text-gray-700">Recur For Next:</label>
                     <div className="flex space-x-4 mt-2">
                         <label className="flex items-center">
-                            <input type="radio" name="recurrence" value="7 Days" checked={reminder.recurrence === '7 Days'} onChange={handleChange} className="mr-2"/>
+                            <input type="radio" name="recurrence" value="7 Days" checked={reminder.recurrence === '7 Days'} onChange={handleChange} className="mr-2" />
                             7 Days
                         </label>
                         <label className="flex items-center">
-                            <input type="radio" name="recurrence" value="5 Days" checked={reminder.recurrence === '5 Days'} onChange={handleChange} className="mr-2"/>
+                            <input type="radio" name="recurrence" value="5 Days" checked={reminder.recurrence === '5 Days'} onChange={handleChange} className="mr-2" />
                             5 Days
                         </label>
                         <label className="flex items-center">

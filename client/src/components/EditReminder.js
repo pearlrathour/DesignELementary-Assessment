@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from 'react-router-dom';
 import { useUserStore } from '../store';
 
 export default function EditReminder() {
     let navigate = useNavigate();
     const { id } = useUserStore();
+    const { taskId } = useParams();
 
     const [reminder, setReminder] = useState({
         date: '',
@@ -13,18 +14,36 @@ export default function EditReminder() {
         email: '',
         contactno: '',
         sms: '',
-        recurrence: 'No Repeat',
+        repeat: 'No Repeat',
         enable: true
     });
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-        if (name === 'enable') {
-          setReminder((prev) => ({ ...prev, enable: checked }));
-        } else {
-          setReminder((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+        setReminder((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+    };
+
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+        const reminderData = { ...reminder, id: taskId };
+
+        const response = await fetch('http://localhost:4000/edit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(reminderData)
+        });
+
+        const j = await response.json();
+        if (j.success) {
+            alert("Thank you, your reminder is updated successfully !!!");
+            navigate("/home");
         }
-      };
+        else {
+            alert(j.message);
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -46,6 +65,27 @@ export default function EditReminder() {
             alert(j.message);
         }
     };
+
+    useEffect(() => {
+        async function loadData() {
+            const response = await fetch('http://localhost:4000/fetchreminder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: taskId
+                })
+            });
+
+            const j = await response.json();
+            if (j.success) {
+                setReminder(j.data);
+                console.log(j.data)
+            }
+        }
+        loadData();
+    }, []);
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100">
@@ -81,7 +121,7 @@ export default function EditReminder() {
 
                 <div className="mb-4">
                     <label className="block text-gray-700">Contact No.:</label>
-                    <input type="tel" name="contact" value={reminder.contact} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md" required />
+                    <input type="tel" name="contactno" value={reminder.contactno} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md" required />
                 </div>
 
                 <div className="mb-4">
@@ -93,25 +133,30 @@ export default function EditReminder() {
                     <label className="block text-gray-700">Recur For Next:</label>
                     <div className="flex space-x-4 mt-2">
                         <label className="flex items-center">
-                            <input type="radio" name="recurrence" value="7 Days" checked={reminder.recurrence === '7 Days'} onChange={handleChange} className="mr-2" />
+                            <input type="radio" name="repeat" value="7 Days" checked={reminder.repeat === '7 Days'} onChange={handleChange} className="mr-2" />
                             7 Days
                         </label>
                         <label className="flex items-center">
-                            <input type="radio" name="recurrence" value="5 Days" checked={reminder.recurrence === '5 Days'} onChange={handleChange} className="mr-2" />
+                            <input type="radio" name="repeat" value="5 Days" checked={reminder.repeat === '5 Days'} onChange={handleChange} className="mr-2" />
                             5 Days
                         </label>
                         <label className="flex items-center">
-                            <input type="radio" name="recurrence" value="3 Days" checked={reminder.recurrence === '3 Days'} onChange={handleChange} className="mr-2" />
+                            <input type="radio" name="repeat" value="3 Days" checked={reminder.repeat === '3 Days'} onChange={handleChange} className="mr-2" />
                             3 Days
                         </label>
                         <label className="flex items-center">
-                            <input type="radio" name="recurrence" value="2 Days" checked={reminder.recurrence === '2 Days'} onChange={handleChange} className="mr-2" />
+                            <input type="radio" name="repeat" value="2 Days" checked={reminder.repeat === '2 Days'} onChange={handleChange} className="mr-2" />
                             2 Days
                         </label>
                     </div>
+
+                    <div className="mb-4 flex flex-row items-center justify-start mt-4">
+                        <label className="block text-gray-700">Enabled: </label>
+                        <input type="checkbox" name="enable" checked={reminder.enable} onChange={handleChange} className=" mx-4 h-5 w-5 border border-gray-300 rounded-md" required />
+                    </div>
                 </div>
 
-                <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md">Confirm</button>
+                <button type="submit" onClick={handleUpdate} className="bg-blue-500 text-white px-4 py-2 rounded-md">Update</button>
             </form>
         </div>
     );

@@ -19,8 +19,8 @@ const TaskSchema = new Schema({
         required: true
     },
     contactno: {
-        type: Number,
-        // required: true
+        type: String,
+        required: true
     },
     sms: {
         type: String,
@@ -28,7 +28,7 @@ const TaskSchema = new Schema({
     },
     repeat:{
         type: String,
-        enum: ['2 days', '5 days', '7 days', 'No Repeat'],
+        enum: ['2 Days', '5 Days', '7 Days', 'No Repeat'],
         default: 'No Repeat'
     },
     enable: {

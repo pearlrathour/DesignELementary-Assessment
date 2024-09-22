@@ -2,6 +2,7 @@ const User = require("../models/user");
 const Task = require("../models/task");
 
 module.exports.add = async (req, res) => {
+    console.log(req.body);
     const { id, date, subject, description, email, contactno, sms, repeat } = req.body;
 
     try {
@@ -23,7 +24,7 @@ module.exports.add = async (req, res) => {
 
 module.exports.delete = async (req, res) => {
     const { userId, taskId } = req.body;
-
+    
     try {
         await Task.findOneAndDelete({ _id: taskId });
         await User.findByIdAndUpdate(userId, { $pull: { tasks: taskId } });
@@ -64,14 +65,25 @@ module.exports.fetchreminders = async (req, res) => {
     try {
         const user = await User.findById(id).populate({
             path: 'tasks',
-            model: 'Task',
-            select: '-_id -__v'
+            model: 'Task'
         });
 
         if (!user) {
             return res.status(404).json({ success: false, message: "User not found" });
         }
         res.json({success: true, data: user});
+    }
+    catch (error) {
+        res.json({ success: false });
+    }
+};
+
+module.exports.fetchreminder = async (req, res) => {
+    const { id } = req.body;
+
+    try {
+        const rem = await Task.findById(id);
+        res.json({success: true, data: rem});
     }
     catch (error) {
         res.json({ success: false });

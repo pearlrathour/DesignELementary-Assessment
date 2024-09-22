@@ -15,7 +15,7 @@ export default function App() {
           <Route exact path="/signin" element={<Signin />} />
           <Route exact path="/home" element={<Home />} />
           <Route exact path="/addreminder" element={<AddReminder />} />
-          <Route exact path="/editreminder" element={<EditReminder />} />
+          <Route exact path="/editreminder/:taskId" element={<EditReminder />} />
         </Routes>
       </Router>
     </div>

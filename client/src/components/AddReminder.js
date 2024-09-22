@@ -13,7 +13,7 @@ export default function AddReminder() {
         email: '',
         contactno: '',
         sms: '',
-        recurrence: 'No Repeat',
+        repeat: 'No Repeat',
         enable: true
     });
 
@@ -40,6 +40,7 @@ export default function AddReminder() {
 
         const j = await response.json();
         if (j.success) {
+            alert("Thank you, your reminder is added !!!");
             navigate("/home");
         }
         else {
@@ -81,7 +82,7 @@ export default function AddReminder() {
 
                 <div className="mb-4">
                     <label className="block text-gray-700">Contact No.:</label>
-                    <input type="tel" name="contact" value={reminder.contact} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md" required />
+                    <input type="text" name="contactno" value={reminder.contactno} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md" required />
                 </div>
 
                 <div className="mb-4">
@@ -93,19 +94,19 @@ export default function AddReminder() {
                     <label className="block text-gray-700">Recur For Next:</label>
                     <div className="flex space-x-4 mt-2">
                         <label className="flex items-center">
-                            <input type="radio" name="recurrence" value="7 Days" checked={reminder.recurrence === '7 Days'} onChange={handleChange} className="mr-2" />
+                            <input type="radio" name="repeat" value="7 Days" checked={reminder.repeat === '7 Days'} onChange={handleChange} className="mr-2" />
                             7 Days
                         </label>
                         <label className="flex items-center">
-                            <input type="radio" name="recurrence" value="5 Days" checked={reminder.recurrence === '5 Days'} onChange={handleChange} className="mr-2" />
+                            <input type="radio" name="repeat" value="5 Days" checked={reminder.repeat === '5 Days'} onChange={handleChange} className="mr-2" />
                             5 Days
                         </label>
                         <label className="flex items-center">
-                            <input type="radio" name="recurrence" value="3 Days" checked={reminder.recurrence === '3 Days'} onChange={handleChange} className="mr-2" />
+                            <input type="radio" name="repeat" value="3 Days" checked={reminder.repeat === '3 Days'} onChange={handleChange} className="mr-2" />
                             3 Days
                         </label>
                         <label className="flex items-center">
-                            <input type="radio" name="recurrence" value="2 Days" checked={reminder.recurrence === '2 Days'} onChange={handleChange} className="mr-2" />
+                            <input type="radio" name="repeat" value="2 Days" checked={reminder.repeat === '2 Days'} onChange={handleChange} className="mr-2" />
                             2 Days
                         </label>
                     </div>

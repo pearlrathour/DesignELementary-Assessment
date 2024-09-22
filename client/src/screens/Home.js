@@ -23,7 +23,6 @@ export default function Home() {
             const j = await response.json();
             if (j.success) {
                 setReminders(j.data.tasks);
-                console.log("R",j.data.tasks);
             }
         }
         loadData();
@@ -35,7 +34,7 @@ export default function Home() {
             <div className={`flex flex-row flex-wrap py-6 justify-start items-start text-3xl text-gray-400 ${reminders.length ? "" : "bg-blue-50"}`}>
                 {reminders.length > 0 ? (
                     reminders.map((reminder) => (
-                        <Link key={reminder._id} to='/editreminder' className="basis-1/4 cursor-pointer">
+                        <Link key={reminder._id} to={`/editreminder/${reminder._id}`} className="basis-1/4 cursor-pointer">
                             <Card reminder={reminder} />
                         </Link>
                     ))

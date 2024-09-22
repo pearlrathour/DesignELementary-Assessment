@@ -7,7 +7,7 @@ router.route('/add')
     .post(tasks.add);
 
 router.route('/del')
-    .post(tasks.delete);
+    .delete(tasks.delete);
 
 router.route('/edit')
     .post(tasks.edit);

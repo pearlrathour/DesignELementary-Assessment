@@ -9,7 +9,7 @@ const ReminderCard = ({ reminder }) => {
         e.preventDefault();
 
         const response = await fetch('http://localhost:4000/del', {
-            method: 'POST',
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
             },
